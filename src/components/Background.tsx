@@ -1,5 +1,5 @@
 // Background.tsx
-import React, { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 
 type Bubble = {
   id: number;
