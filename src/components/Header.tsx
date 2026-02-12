@@ -38,7 +38,7 @@ export default function Header() {
       <div className="flex lg:hidden items-center justify-between p-5 bg-slate-900">
         <a href="#hero">
           <img
-            src="src/assets/AR.ico"
+            src={`${import.meta.env.BASE_URL}img/AR.ico`}
             alt="logo"
             className="w-10 h-10 rounded-full"
           />
@@ -68,10 +68,11 @@ export default function Header() {
         <div className="w-20 h-20 rounded-full bg-slate-900 flex items-center justify-center ml-5 mt-20">
           <a href="#hero">
             <img
-              src="src/assets/AR.ico"
-              alt=""
-              className="rounded-full cursor-pointer"
+                src={`${import.meta.env.BASE_URL}img/AR.ico`}
+                alt=""
+                className="rounded-full cursor-pointer"
             />
+
           </a>
         </div>
 

@@ -9,13 +9,14 @@ export default function AboutSection() {
   const [visible, setVisible] = useState(false);
 
   const instrumentCards = [
-    { id: 1, title: "React", img: "/img/instruments/react-ic.png" },
-    { id: 2, title: "Figma", img: "/img/instruments/figma-ic.png" },
-    { id: 3, title: "Canva", img: "/img/instruments/canva-ic.webp" },
-    { id: 4, title: "TSX", img: "/img/instruments/tsx-ic.png" },
-    { id: 5, title: "Chat GPT", img: "/img/instruments/gpt-ic.jpg" },
-    { id: 6, title: "VS Code", img: "/img/instruments/vscode-ic.png" },
+    { id: 1, title: "React", img: `${import.meta.env.BASE_URL}img/instruments/react-ic.png` },
+    { id: 2, title: "Figma", img: `${import.meta.env.BASE_URL}img/instruments/figma-ic.png` },
+    { id: 3, title: "Canva", img: `${import.meta.env.BASE_URL}img/instruments/canva-ic.webp` },
+    { id: 4, title: "TSX", img: `${import.meta.env.BASE_URL}img/instruments/tsx-ic.png` },
+    { id: 5, title: "Chat GPT", img: `${import.meta.env.BASE_URL}img/instruments/gpt-ic.jpg` },
+    { id: 6, title: "VS Code", img: `${import.meta.env.BASE_URL}img/instruments/vscode-ic.png` },
   ];
+
 
   // прогресс скролла внутри секции (0..1) — микро-скролл эффект
   const { scrollYProgress } = useScroll({
