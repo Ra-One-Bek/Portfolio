@@ -157,7 +157,7 @@ export default function AboutSection() {
                 className={`
                   max-w-[600px] text-white/55 leading-relaxed
                   transition-all duration-700 delay-200 ease-out
-                  ${visible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-10"}
+                  ${visible ? "opacity-100 translate-x-0" : "opacity-90 translate-x-0"}
                 `}
               >
                 <span className="text-white/85 font-medium">Фронтенд-разработчик</span>{" "}

@@ -28,7 +28,7 @@ export default function HeroSection() {
   const circleShift = useMemo(() => y* -0.60, [y]);
 
   return (
-    <section id="hero" className="relative w-full h-screen bg-gradient-to-t from-slate-700 via-blue-300 to-white-500 ">
+    <section id="hero" className="relative w-full h-screen bg-gradient-to-t from-slate-700 via-blue-300 to-white-500 overflow-x-hidden">
 
       <div 
         className="absolute inset-0 flex items-center justify-center -z-20"

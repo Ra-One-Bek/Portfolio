@@ -2,9 +2,9 @@ export default function ContactSection() {
   const base = import.meta.env.BASE_URL;
 
     const icons = [
-        { id: 1, title: "Whatsapp", img: `${base}img/contact/whatsapp-ic.webp` },
-        { id: 2, title: "Telegram", img: `${base}img/contact/telegram-ic.png` },
-        { id: 3, title: "Instagram", img: `${base}img/contact/instagram-ic.webp` },
+        { id: 1, title: "Whatsapp", img: `${base}img/contact/whatsapp-ic.webp`, link: "https://wa.me/77789633405", },
+        { id: 2, title: "Telegram", img: `${base}img/contact/telegram-ic.png`, link: "https://t.me/gucc1_prado", },
+        { id: 3, title: "Instagram", img: `${base}img/contact/instagram-ic.webp`, link: "https://instagram.com/ab1yev__",},
     ];
 
 
