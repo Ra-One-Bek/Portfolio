@@ -51,7 +51,7 @@ export default function HeroSection() {
         style={{ transform: `translateY(${imgShift}px)` }} 
       >
         <img
-          src="/img/RaOne.png"
+          src={`${import.meta.env.BASE_URL}img/RaOne.png`}
           alt=""
           className="w-[600px] object-contain"
         />
