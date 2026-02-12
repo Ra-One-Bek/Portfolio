@@ -1,0 +1,20 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: "Rubik Mono One";
+  src: url("./assets/fonts/RubikMonoOne-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@layer base {
+  html, body {
+    font-family: "Rubik Mono One", monospace;
+  }
+}
+
+html, body {
+  scroll-behavior: smooth;
+}
+
