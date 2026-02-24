@@ -115,7 +115,7 @@ export default function AboutSection() {
         </div>
 
         {/* BOTTOM */}
-        <div className="w-full h-1/2 flex items-center justify-center gap-8">
+        <div className="w-full h-1/2 flex lg:flex-row flex-col items-center justify-center gap-8">
           {/* инструменты */}
           <motion.div
             className="grid grid-cols-3 gap-3 max-w-[520px]"
@@ -151,12 +151,13 @@ export default function AboutSection() {
           </motion.div>
 
           {/* текст справа */}
-          <div className="w-1/2 h-full hidden lg:flex items-center justify-end">
+          <div className="w-8/9 lg:w-1/2 h-full lg:flex items-center justify-end">
             <div className="p-6 bg-white/[0.04] rounded-2xl border border-white/10 backdrop-blur-2xl shadow-[0_30px_120px_rgba(0,0,0,0.45)]">
               <p
                 className={`
                   max-w-[600px] text-white/55 leading-relaxed
                   transition-all duration-700 delay-200 ease-out
+                  lg:text-lg text-sm
                   ${visible ? "opacity-100 translate-x-0" : "opacity-90 translate-x-0"}
                 `}
               >

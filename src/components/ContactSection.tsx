@@ -38,6 +38,7 @@ export default function ContactSection() {
           {icons.map((item) => (
             <div
               key={item.id}
+              onClick={() => window.open(item.link, "_blank")}
               className="w-16 h-16 flex items-center justify-center 
                          bg-white/10 rounded-2xl 
                          hover:bg-purple-500/30 

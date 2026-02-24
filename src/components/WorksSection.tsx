@@ -21,11 +21,11 @@ export default function WorksSection() {
     },
     {
       id: "2",
-      title: "E-commerce Store",
-      description: "Интернет-магазин с корзиной и фильтрами.",
+      title: "WorkAI HR navigator",
+      description: "AI HR navigator application.",
       image: "/img/work2.jpg",
       link: "#",
-      tech: ["Next.js", "Stripe", "Redux"],
+      tech: ["React.js", "TypeScript", "Azure"],
     },
     {
       id: "3",
