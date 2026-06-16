@@ -8,6 +8,9 @@ export default function AboutSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
 
+  const cardsWrapperRef = useRef<HTMLDivElement>(null);
+  const [cardsOffset, setCardsOffset] = useState(0);
+
   const instrumentCards = [
     { id: 1, title: "React", img: `${import.meta.env.BASE_URL}img/instruments/react-ic.png` },
     { id: 2, title: "Figma", img: `${import.meta.env.BASE_URL}img/instruments/figma-ic.png` },
@@ -16,6 +19,12 @@ export default function AboutSection() {
     { id: 5, title: "Chat GPT", img: `${import.meta.env.BASE_URL}img/instruments/gpt-ic.jpg` },
     { id: 6, title: "VS Code", img: `${import.meta.env.BASE_URL}img/instruments/vscode-ic.png` },
   ];
+
+  const SkillCards =[
+    {id: 1, title: "UI/UX designer", description: ""},
+    {id: 1, title: "Creative developer", description: ""},
+    {id: 1, title: "backend", description: ""},
+  ]
 
 
   // прогресс скролла внутри секции (0..1) — микро-скролл эффект
@@ -32,6 +41,13 @@ export default function AboutSection() {
 
   // чуть “плотнее” эффект: можно добавить лёгкий Y
   const titleY = useTransform(scrollYProgress, [0, 1], [12, -12]);
+  
+
+  const cardsY = useTransform(
+    scrollYProgress,
+    [0, 0.8],
+    [-cardsOffset, 0]
+  );
 
   useEffect(() => {
     if (!sectionRef.current) return;
@@ -45,6 +61,14 @@ export default function AboutSection() {
 
     observer.observe(sectionRef.current);
     return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!cardsWrapperRef.current) return;
+
+    const rect = cardsWrapperRef.current.getBoundingClientRect();
+
+    setCardsOffset(rect.top + window.scrollY);
   }, []);
 
   // анимации для иконок (появление снизу по очереди)
@@ -105,7 +129,7 @@ export default function AboutSection() {
                     uppercase
                   "
                 >
-                  section
+                  PORTFOLIO
                 </div>
               </motion.div>
 
@@ -152,7 +176,7 @@ export default function AboutSection() {
 
           {/* текст справа */}
           <div className="w-8/9 lg:w-1/2 h-full lg:flex items-center justify-end">
-            <div className="p-6 bg-white/[0.04] rounded-2xl border border-white/10 backdrop-blur-2xl shadow-[0_30px_120px_rgba(0,0,0,0.45)]">
+            <div className="p-6">
               <p
                 className={`
                   max-w-[600px] text-white/55 leading-relaxed
@@ -161,21 +185,24 @@ export default function AboutSection() {
                   ${visible ? "opacity-100 translate-x-0" : "opacity-90 translate-x-0"}
                 `}
               >
-                <span className="text-white/85 font-medium">Фронтенд-разработчик</span>{" "}
-                на React + TypeScript + Tailwind CSS, создающий визуально стильные и современные сайты.
+                <span className="text-white/85 font-medium">Креативный разработчик</span>{" "}
+                , который объединяет дизайн и код в единый визуальный опыт.
                 <br />
                 <span className="text-white/70">
-                  Фокус — на эстетике, чистой композиции и ощущении «дорогого» интерфейса.
+                  Создаю современные интерфейсы с акцентом на анимации, эстетику и внимание к деталям.
                 </span>{" "}
-                Красота, адаптивность и аккуратный код работают вместе, чтобы продукт выглядел
-                впечатляюще и профессионально.
               </p>
             </div>
           </div>
         </div>
       </div>
 
-      <AboutSkillsCards />
+      <motion.div
+        ref={cardsWrapperRef}
+        style={{ y: cardsY }}
+      >
+        <AboutSkillsCards />
+      </motion.div>
     </section>
   );
 }

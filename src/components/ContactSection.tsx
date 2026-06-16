@@ -1,61 +1,231 @@
-export default function ContactSection() {
-  const base = import.meta.env.BASE_URL;
+import { useRef, useState } from "react"
 
-    const icons = [
-        { id: 1, title: "Whatsapp", img: `${base}img/contact/whatsapp-ic.webp`, link: "https://wa.me/77789633405", },
-        { id: 2, title: "Telegram", img: `${base}img/contact/telegram-ic.png`, link: "https://t.me/gucc1_prado", },
-        { id: 3, title: "Instagram", img: `${base}img/contact/instagram-ic.webp`, link: "https://instagram.com/ab1yev__",},
-    ];
+function ContactSection() {
+  const cardRef = useRef<HTMLElement>(null)
 
+  const [style, setStyle] = useState({
+    rotateX: 0,
+    rotateY: 0,
+    x: 50,
+    y: 50,
+  })
+
+  const handleMove = (e: React.MouseEvent<HTMLElement>) => {
+    const card = cardRef.current
+
+    if (!card) return
+
+    const rect = card.getBoundingClientRect()
+
+    const x = e.clientX - rect.left
+    const y = e.clientY - rect.top
+
+    const centerX = rect.width / 2
+    const centerY = rect.height / 2
+
+    const rotateY = ((x - centerX) / centerX) * 10
+    const rotateX = -((y - centerY) / centerY) * 10
+
+    setStyle({
+      rotateX,
+      rotateY,
+      x: (x / rect.width) * 100,
+      y: (y / rect.height) * 100,
+    })
+  }
+
+  const reset = () => {
+    setStyle({
+      rotateX: 0,
+      rotateY: 0,
+      x: 50,
+      y: 50,
+    })
+  }
 
   return (
-    <section id="contact" className="w-full min-h-screen bg-gradient-to-t from-blue-950 via-slate-950 to-slate-950 flex items-center justify-center px-6">
-      
-      {/* Glass Card */}
-      <div className="w-full max-w-4xl bg-gradient-to-br from-purple-900/60 via-purple-800/40 to-purple-600/30 
-                      backdrop-blur-xl rounded-3xl shadow-2xl shadow-purple-500/20 
-                      p-10 md:p-16 flex flex-col items-center text-center gap-6">
+    <main id="contact" className="min-h-screen bg-slate-900 overflow-hidden flex items-center justify-center p-6">
 
-        {/* Title */}
-        <h1 className="text-5xl md:text-7xl font-extrabold 
-                       bg-gradient-to-t from-purple-500 via-pink-400 to-white 
-                       bg-clip-text text-transparent">
-          Contact Me
-        </h1>
+      <div className="[perspective:2000px]">
+        <section
+          ref={cardRef}
+          onMouseMove={handleMove}
+          onMouseLeave={reset}
+          style={{
+            transform: `
+              rotateX(${style.rotateX}deg)
+              rotateY(${style.rotateY}deg)
+              translateZ(0)
+            `,
+          }}
+          className="
+            relative
+            w-full
+            max-w-[430px]
+            overflow-hidden
+            rounded-[32px]
+            border
+            border-white/80
+            bg-white/75
+            p-8
+            text-center
+            backdrop-blur-xl
+            shadow-[0_30px_80px_rgba(90,64,38,0.16)]
+            transition-transform
+            duration-150
+            ease-out
+            will-change-transform
+          "
+        >
+          {/* glow */}
+          <div
+            className="
+              absolute
+              -inset-[40%]
+              pointer-events-none
+              opacity-60
+              blur-3xl
+            "
+            style={{
+              background: `
+                radial-gradient(
+                  circle at ${style.x}% ${style.y}%,
+                  rgba(255,170,120,.55),
+                  transparent 35%
+                )
+              `,
+            }}
+          />
 
-        {/* Divider */}
-        <div className="w-24 h-1 bg-gradient-to-r from-purple-500 via-pink-400 to-white rounded-full"></div>
+          {/* shine */}
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background: `
+                radial-gradient(
+                  circle at ${style.x}% ${style.y}%,
+                  rgba(255,255,255,.7),
+                  transparent 20%
+                )
+              `,
+            }}
+          />
 
-        {/* Contact Info */}
-        <div className="text-gray-300 space-y-2 text-lg">
-          <p className="hover:text-white transition">📞 +7 778 963 3405</p>
-          <p className="hover:text-white transition">📧 rauanbek05@icloud.com</p>
-          <p className="hover:text-white transition">📧 helloaktau@gmail.com</p>
-        </div>
+          <div className="relative z-10">
 
-        {/* Social Icons */}
-        <div className="flex gap-6 mt-6">
-          {icons.map((item) => (
-            <div
-              key={item.id}
-              onClick={() => window.open(item.link, "_blank")}
-              className="w-16 h-16 flex items-center justify-center 
-                         bg-white/10 rounded-2xl 
-                         hover:bg-purple-500/30 
-                         hover:scale-110 
-                         transition-all duration-300 
-                         cursor-pointer shadow-lg"
-            >
-              <img
-                src={item.img}
-                alt={item.title}
-                className="w-12 h-12 object-contain"
-              />
+            <div className="
+              mx-auto
+              mb-5
+              grid
+              h-[92px]
+              w-[92px]
+              place-items-center
+              rounded-[28px]
+              bg-gradient-to-br
+              from-orange-400
+              to-pink-500
+              text-[42px]
+              font-extrabold
+              text-white
+              shadow-[0_18px_35px_rgba(255,92,138,.32)]
+            ">
+              R
             </div>
-          ))}
-        </div>
 
+            <p className="mb-2 text-xs font-bold uppercase tracking-[0.12em] text-orange-500">
+              Digital Business Card
+            </p>
+
+            <h1 className="text-[44px] font-extrabold">
+              Rauanbek
+            </h1>
+
+            <p className="mt-3 text-lg font-semibold text-[#5f5a52]">
+              Creative Frontend Developer / Designer
+            </p>
+
+            <p className="mt-6 leading-relaxed text-[#6f675c]">
+              Привет! Я создаю современные интерфейсы,
+              интерактивные сайты и digital-продукты.
+            </p>
+
+            <div className="mt-7 grid gap-3">
+
+              <a
+                href="https://wa.me/77789633405"
+                className="
+                  rounded-[18px]
+                  bg-gradient-to-br
+                  from-orange-400
+                  to-pink-500
+                  px-5
+                  py-4
+                  font-extrabold
+                  text-white
+                  transition
+                  hover:scale-[1.02]
+                "
+              >
+                Написать на whatsapp
+              </a>
+
+              <a
+                href="tel:+77789633405"
+                className="
+                  rounded-[18px]
+                  bg-[#fff0d9]
+                  px-5
+                  py-4
+                  font-extrabold
+                "
+              >
+                Позвонить
+              </a>
+
+            </div>
+
+            <div className="mt-7 flex justify-center gap-5">
+
+              <a
+                href="https://t.me/gucc1_prado"
+                target="_blank"
+                className="font-bold text-sky-500"
+              >
+                Telegram
+              </a>
+
+              <a
+                href="https://instagram.com/ab1yev__"
+                target="_blank"
+                className="font-bold text-violet-400"
+              >
+                Instagram
+              </a>
+
+              <a
+                href="mailto:helloaktau@gmail.com"
+                target="_blank"
+                className="font-bold text-green-500"
+              >
+                mail
+              </a>
+
+              <a
+                href="https://github.com/Ra-One-Bek/"
+                target="_blank"
+                className="font-bold text-orange-500"
+              >
+                GitHub
+              </a>
+
+            </div>
+
+          </div>
+        </section>
       </div>
-    </section>
-  );
+
+    </main>
+  )
 }
+
+export default ContactSection
