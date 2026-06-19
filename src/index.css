@@ -16,5 +16,10 @@
 
 html, body {
   scroll-behavior: smooth;
+  background-color:#08080833;
 }
+/* 
+* {
+  outline: 1px solid red;
+} */
 

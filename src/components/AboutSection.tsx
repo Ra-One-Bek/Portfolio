@@ -11,6 +11,16 @@ export default function AboutSection() {
   const cardsWrapperRef = useRef<HTMLDivElement>(null);
   const [cardsOffset, setCardsOffset] = useState(0);
 
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
   const instrumentCards = [
     { id: 1, title: "React", img: `${import.meta.env.BASE_URL}img/instruments/react-ic.png` },
     { id: 2, title: "Figma", img: `${import.meta.env.BASE_URL}img/instruments/figma-ic.png` },
@@ -20,18 +30,49 @@ export default function AboutSection() {
     { id: 6, title: "VS Code", img: `${import.meta.env.BASE_URL}img/instruments/vscode-ic.png` },
   ];
 
-  const SkillCards =[
-    {id: 1, title: "UI/UX designer", description: ""},
-    {id: 1, title: "Creative developer", description: ""},
-    {id: 1, title: "backend", description: ""},
-  ]
-
-
   // прогресс скролла внутри секции (0..1) — микро-скролл эффект
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start end", "end start"],
   });
+
+  const leftHandX = useTransform(
+    scrollYProgress,
+    [0, 1],
+    [0, 600]
+  );
+
+  const rightHandX = useTransform(
+    scrollYProgress,
+    [0, 1],
+    [0, -600]
+  );
+
+  const leftHandRotate = useTransform(
+    scrollYProgress,
+    [0, 1],
+    [0, 12]
+  );
+
+  const rightHandRotate = useTransform(
+    scrollYProgress,
+    [0, 1],
+    [0, -12]
+  );
+
+  const leftHandStyle = isMobile
+    ? {}
+    : {
+        x: leftHandX,
+        rotate: leftHandRotate,
+      };
+
+  const rightHandStyle = isMobile
+    ? {}
+    : {
+        x: rightHandX,
+        rotate: rightHandRotate,
+      };
 
   // About me: слева -> вправо
   const aboutX = useTransform(scrollYProgress, [0, 1], [-80, 80]);
@@ -41,12 +82,13 @@ export default function AboutSection() {
 
   // чуть “плотнее” эффект: можно добавить лёгкий Y
   const titleY = useTransform(scrollYProgress, [0, 1], [12, -12]);
-  
+
+  const mobileStartOffset = isMobile ? 10 : 0;
 
   const cardsY = useTransform(
     scrollYProgress,
     [0, 0.8],
-    [-cardsOffset, 0]
+    [-cardsOffset + mobileStartOffset, 0]
   );
 
   useEffect(() => {
@@ -93,9 +135,14 @@ export default function AboutSection() {
   };
 
   return (
-    <section id="about" className="relative w-full h-full flex flex-col p-5 bg-gradient-to-t from-slate-900 via-slate-800 to-slate-700">
+    <section
+      id="about"
+      className="relative w-full bg-stone-900 h-full flex flex-col p-5"
+    >
+      
       <Background />
       <BubbleFollower targetRef={sectionRef} />
+      
 
       <div ref={sectionRef} className="relative z-10 w-full h-screen flex flex-col p-5">
         {/* TOP */}
@@ -106,7 +153,7 @@ export default function AboutSection() {
               <motion.div style={{ x: aboutX, y: titleY }}>
                 <h1
                   className="
-                    text-[52px] lg:text-[74px]
+                    text-[42px] lg:text-[74px]
                     font-semibold tracking-tight leading-[0.9]
                     bg-gradient-to-b from-white via-white/80 to-white/30
                     bg-clip-text text-transparent
@@ -122,7 +169,7 @@ export default function AboutSection() {
                 <div
                   className="
                     mt-2
-                    text-[44px] lg:text-[84px]
+                    text-[24px] lg:text-[74px]
                     font-semibold leading-none
                     text-white/20
                     tracking-[0.12em]
@@ -137,6 +184,40 @@ export default function AboutSection() {
             </div>
           </div>
         </div>
+
+        <motion.img
+          src={`${import.meta.env.BASE_URL}left.png`}
+          alt=""
+          style={leftHandStyle}
+          className="
+            absolute
+            left-0
+            top-[42%]
+            -translate-y-1/2
+            w-[420px]
+            lg:w-[1020px]
+            opacity-50
+            pointer-events-none
+            z-[1]
+          "
+        />
+
+        <motion.img
+          src={`${import.meta.env.BASE_URL}right.png`}
+          alt=""
+          style={rightHandStyle}
+          className="
+            absolute
+            right-0
+            top-[42%]
+            -translate-y-1/2
+            w-[420px]
+            lg:w-[1020px]
+            opacity-50
+            pointer-events-none
+            z-[1]
+          "
+        />
 
         {/* BOTTOM */}
         <div className="w-full h-1/2 flex lg:flex-row flex-col items-center justify-center gap-8">

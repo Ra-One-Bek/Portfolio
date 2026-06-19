@@ -1,134 +1,126 @@
 import { useRef, useState } from "react"
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion"
 
 function ContactSection() {
   const cardRef = useRef<HTMLElement>(null)
+  const x = useMotionValue(0)
+  const y = useMotionValue(0)
 
-  const [style, setStyle] = useState({
-    rotateX: 0,
-    rotateY: 0,
-    x: 50,
-    y: 50,
+  const rotateX = useSpring(useTransform(y, [-0.5, 0.5], [12, -12]), {
+    stiffness: 120,
+    damping: 20,
   })
 
-  const handleMove = (e: React.MouseEvent<HTMLElement>) => {
-    const card = cardRef.current
+  const rotateY = useSpring(useTransform(x, [-0.5, 0.5], [-12, 12]), {
+    stiffness: 120,
+    damping: 20,
+  })
 
+  const shineX = useTransform(x, (v) => (v + 0.5) * 100)
+  const shineY = useTransform(y, (v) => (v + 0.5) * 100)
+
+
+ const handleMove = (e: React.MouseEvent<HTMLElement>) => {
+    const card = cardRef.current
     if (!card) return
 
     const rect = card.getBoundingClientRect()
 
-    const x = e.clientX - rect.left
-    const y = e.clientY - rect.top
+    const px = (e.clientX - rect.left) / rect.width - 0.5
+    const py = (e.clientY - rect.top) / rect.height - 0.5
 
-    const centerX = rect.width / 2
-    const centerY = rect.height / 2
-
-    const rotateY = ((x - centerX) / centerX) * 10
-    const rotateX = -((y - centerY) / centerY) * 10
-
-    setStyle({
-      rotateX,
-      rotateY,
-      x: (x / rect.width) * 100,
-      y: (y / rect.height) * 100,
-    })
+    x.set(px)
+    y.set(py)
   }
 
   const reset = () => {
-    setStyle({
-      rotateX: 0,
-      rotateY: 0,
-      x: 50,
-      y: 50,
-    })
+    x.set(0)
+    y.set(0)
   }
 
   return (
-    <main id="contact" className="min-h-screen bg-slate-900 overflow-hidden flex items-center justify-center p-6">
+    <main id="contact" className="min-h-screen bg-stone-950 overflow-hidden flex items-center justify-center p-6">
 
       <div className="[perspective:2000px]">
-        <section
+        <motion.section
           ref={cardRef}
           onMouseMove={handleMove}
           onMouseLeave={reset}
           style={{
-            transform: `
-              rotateX(${style.rotateX}deg)
-              rotateY(${style.rotateY}deg)
-              translateZ(0)
-            `,
+            rotateX,
+            rotateY,
+            perspective: 2000,
           }}
           className="
             relative
             w-full
-            max-w-[430px]
+            max-w-[500px]
             overflow-hidden
-            rounded-[32px]
+            rounded-[8px]
             border
-            border-white/80
-            bg-white/75
-            p-8
+            border-[#82633f]
+            bg-[#e8dbc2]
+            p-10
             text-center
-            backdrop-blur-xl
-            shadow-[0_30px_80px_rgba(90,64,38,0.16)]
+            shadow-[0_40px_100px_rgba(0,0,0,0.35)]
             transition-transform
             duration-150
             ease-out
             will-change-transform
           "
         >
-          {/* glow */}
+
+          {/* parchment texture */}
           <div
-            className="
-              absolute
-              -inset-[40%]
-              pointer-events-none
-              opacity-60
-              blur-3xl
-            "
+            className="absolute inset-0 opacity-20"
             style={{
-              background: `
-                radial-gradient(
-                  circle at ${style.x}% ${style.y}%,
-                  rgba(255,170,120,.55),
-                  transparent 35%
-                )
+              backgroundImage: `
+                radial-gradient(circle at 20% 30%, rgba(120,90,40,.12), transparent 30%),
+                radial-gradient(circle at 80% 70%, rgba(90,60,20,.10), transparent 40%)
               `,
             }}
           />
 
+          {/* old paper vignette */}
+          <div className="absolute inset-0 border-[8px] border-[#c8b28d]/50 pointer-events-none" />
+          
+
           {/* shine */}
-          <div
-            className="absolute inset-0 pointer-events-none"
+          <motion.div
+            className="absolute inset-0 pointer-events-none opacity-30"
             style={{
-              background: `
-                radial-gradient(
-                  circle at ${style.x}% ${style.y}%,
-                  rgba(255,255,255,.7),
-                  transparent 20%
-                )
-              `,
+              background: useTransform(
+                [x, y],
+                ([vx, vy]) => `
+                  radial-gradient(
+                    circle at ${(vx as number + 0.5) * 100}% ${(vy as number + 0.5) * 100}%,
+                    rgba(120,90,40,.15),
+                    transparent 30%
+                  )
+                `
+              ),
             }}
           />
 
           <div className="relative z-10">
 
-            <div className="
-              mx-auto
-              mb-5
-              grid
-              h-[92px]
-              w-[92px]
-              place-items-center
-              rounded-[28px]
-              bg-gradient-to-br
-              from-orange-400
-              to-pink-500
-              text-[42px]
-              font-extrabold
-              text-white
-              shadow-[0_18px_35px_rgba(255,92,138,.32)]
-            ">
+            <div
+              className="
+                mx-auto
+                mb-6
+                grid
+                h-[100px]
+                w-[100px]
+                place-items-center
+                rounded-full
+                border-2
+                border-[#7d6036]
+                text-[40px]
+                font-serif
+                text-[#5c4323]
+                bg-[#eadcc0]
+              "
+            >
               R
             </div>
 
@@ -145,7 +137,7 @@ function ContactSection() {
             </p>
 
             <p className="mt-6 leading-relaxed text-[#6f675c]">
-              Привет! Я создаю современные интерфейсы,
+              Я создаю современные интерфейсы,
               интерактивные сайты и digital-продукты.
             </p>
 
@@ -221,7 +213,7 @@ function ContactSection() {
             </div>
 
           </div>
-        </section>
+        </motion.section>
       </div>
 
     </main>

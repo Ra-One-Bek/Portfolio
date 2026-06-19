@@ -200,7 +200,7 @@ function PlayingCard(props: {
       <div
         className="
           absolute inset-0 rounded-2xl
-          bg-slate-950
+          bg-stone-600
           border border-white/15
           text-white
         "

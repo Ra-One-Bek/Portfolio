@@ -42,7 +42,7 @@ export default function BubbleFollower({ targetRef }: Props) {
   const opacity = useTransform(scrollYProgress, [0, 0.05, 0.95, 1], [0, 1, 1, 0]);
 
   return (
-    <>
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
       {/* Gooey */}
       <svg className="absolute w-0 h-0">
         <filter id="goo">
@@ -101,6 +101,6 @@ export default function BubbleFollower({ targetRef }: Props) {
           />
         </motion.div>
       </motion.div>
-    </>
+    </div>
   );
 }

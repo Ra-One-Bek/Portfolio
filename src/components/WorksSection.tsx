@@ -1,188 +1,154 @@
-import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import {
+  motion,
+  useMotionValueEvent,
+  useScroll,
+  useSpring,
+  useTransform,
+  useVelocity,
+} from "framer-motion";
+import GalleryEnvironment from "./gallery/GalleryEnvironment";
+import GalleryRope from "./gallery/GalleryRope";
+import HangingProject from "./gallery/HangingProject";
+import ProjectDetailOverlay from "./gallery/ProjectDetailOverlay";
+import {
+  works,
+  type Work,
+  GALLERY_SPACING_DESKTOP,
+  GALLERY_SPACING_MOBILE,
+  getRopeTop,
+} from "./gallery/worksData";
 
-type Work = {
-  id: string;
-  title: string;
-  description: string;
-  image: string;
-  github: string;
-  tech: string[];
-};
+function useIsMobile(breakpoint = 768) {
+  const [isMobile, setIsMobile] = useState(false);
 
-const works: Work[] = [
-  {
-    id: "01",
-    title: "RaOne online shopping",
-    description:
-      "AI-powered fashion e-commerce платформа нового поколения с 3D визуализацией и персональными рекомендациями.",
-    image: "/img/orbital.jpg",
-    github: "#",
-    tech: ["React, NestJs"],
-  },
-  {
-    id: "02",
-    title: "Aqwa AI",
-    description:
-      "AI-платформа для изучения экономики с персонализированными курсами и адаптивным обучением.",
-    image: "/img/aqwa.jpg",
-    github: "#",
-    tech: ["React, NestJs"],
-  },
-  {
-    id: "03",
-    title: "UberTrack",
-    description:
-      "AI-платформа аренды грузового транспорта с умным подбором под маршрут и бюджет.",
-    image: "/img/nukatrack.jpg",
-    github: "#",
-    tech: ["React, NestJs"],
-  },
-  {
-    id: "04",
-    title: "EyesApp",
-    description:
-      "Умные очки с AI для навигации, взаимодействия и помощи в реальном мире.",
-    image: "/img/pulse.jpg",
-    github: "#",
-    tech: ["React, NestJs"],
-  },
-  {
-    id: "05",
-    title: "KZ Football Analytics",
-    description:
-      "Аналитика казахстанского футбола с AI-инсайтами и статистикой матчей.",
-    image: "/img/aruna.jpg",
-    github: "#",
-    tech: ["React, NestJs"],
-  },
-  {
-    id: "06",
-    title: "PlantCare AI",
-    description:
-      "Приложение для распознавания растений и заболеваний с помощью AI.",
-    image: "/img/nova.jpg",
-    github: "#",
-    tech: ["Flutter"],
-  },
-];
+  useEffect(() => {
+    const mq = window.matchMedia(`(max-width: ${breakpoint - 1}px)`);
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, [breakpoint]);
+
+  return isMobile;
+}
+
+function useViewportWidth() {
+  const [width, setWidth] = useState(
+    typeof window !== "undefined" ? window.innerWidth : 1280
+  );
+
+  useEffect(() => {
+    const onResize = () => setWidth(window.innerWidth);
+    onResize();
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
+  return width;
+}
 
 export default function WorksSection() {
-  const ref = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const [selectedProject, setSelectedProject] = useState<Work | null>(null);
+  const isMobile = useIsMobile();
+  const viewportWidth = useViewportWidth();
+
+  const spacing = isMobile ? GALLERY_SPACING_MOBILE : GALLERY_SPACING_DESKTOP;
+  const galleryWidth = works.length * spacing;
+  const travel = Math.max(0, galleryWidth - viewportWidth + spacing * 0.35);
+  const ropeTop = getRopeTop(isMobile);
 
   const { scrollYProgress } = useScroll({
-    target: ref,
+    target: sectionRef,
     offset: ["start start", "end end"],
   });
 
-  const total = works.length;
+  const scrollVelocity = useVelocity(scrollYProgress);
+  const smoothVelocity = useSpring(scrollVelocity, {
+    stiffness: 140,
+    damping: 22,
+    mass: 0.35,
+  });
+
+  const cameraX = useTransform(scrollYProgress, [0, 1], [spacing * 0.15, -travel]);
+
+  const [walkProgress, setWalkProgress] = useState(0);
+  useMotionValueEvent(scrollYProgress, "change", (v) => {
+    setWalkProgress(Math.round(v * 100));
+  });
 
   return (
     <section
       id="work"
-      ref={ref}
-      className="relative h-[650vh] bg-slate-900"
+      ref={sectionRef}
+      className="relative bg-stone-900"
+      style={{ height: `${Math.max(600, works.length * 105)}vh` }}
     >
-      <div className="sticky top-0 h-screen flex items-center justify-center overflow-hidden">
+      <div className="sticky top-0 h-screen overflow-hidden">
+        {/* 3D scene */}
+        <div
+          className="relative h-full w-full"
+          style={{
+            perspective: "1500px",
+            perspectiveOrigin: "50% 42%",
+          }}
+        >
+          <GalleryEnvironment scrollProgress={scrollYProgress} isMobile={isMobile} />
 
-        {works.map((work, i) => {
-          const segment = 1 / total;
+          {/* Progress indicator */}
+          <div className="pointer-events-none absolute left-6 top-8 z-30 hidden sm:block">
+            <p className="text-[10px] uppercase tracking-[0.35em] text-white/25">
+              Gallery walk
+            </p>
+            <p className="mt-1 text-2xl font-bold text-white/40">
+              {String(walkProgress).padStart(2, "0")}%
+            </p>
+          </div>
 
-          const start = i * segment;
-          const end = (i + 1) * segment;
-
-          const opacity = useTransform(
-            scrollYProgress,
-            [start, start + segment * 0.3, end - segment * 0.3, end],
-            [0, 1, 1, 0]
-          );
-
-          const y = useTransform(
-            scrollYProgress,
-            [start, end],
-            [60, -60]
-          );
-
-          const scale = useTransform(
-            scrollYProgress,
-            [start, start + segment * 0.2, end],
-            [0.92, 1, 0.92]
-          );
-
-          return (
-            <motion.div
-              key={work.id}
-              style={{ opacity, y, scale }}
-              className="
-                absolute
-                w-full
-                max-w-6xl
-                px-4 sm:px-6 lg:px-10
-              "
+          {/* Camera rig */}
+          <motion.div
+            className="absolute inset-0"
+            style={{
+              x: cameraX,
+              transformStyle: "preserve-3d",
+            }}
+          >
+            <div
+              className="relative h-full"
+              style={{
+                width: galleryWidth,
+                transformStyle: "preserve-3d",
+              }}
             >
-              <div
-                className="
-                  grid
-                  grid-cols-1
-                  lg:grid-cols-2
-                  gap-10 lg:gap-20
-                  items-center
-                "
-              >
+              
 
-                {/* IMAGE */}
-                <div className="relative">
-                  <div className="absolute -inset-6 sm:-inset-10 bg-blue-500/10 blur-3xl" />
+              {works.map((work, i) => (
+                <HangingProject
+                  key={work.id}
+                  work={work}
+                  index={i}
+                  total={works.length}
+                  scrollProgress={scrollYProgress}
+                  scrollVelocity={smoothVelocity}
+                  spacing={spacing}
+                  isMobile={isMobile}
+                  isSelected={selectedProject?.id === work.id}
+                  onSelect={setSelectedProject}
+                />
+              ))}
+            </div>
+          </motion.div>
 
-                  <div className="overflow-hidden rounded-2xl sm:rounded-[42px] border border-white/10">
-                    <img
-                      src={work.image}
-                      className="w-full aspect-[16/10] object-cover"
-                    />
-                  </div>
-                </div>
-
-                {/* CONTENT */}
-                <div className="text-white">
-
-                  <span className="text-white/20 text-4xl sm:text-6xl lg:text-7xl font-bold">
-                    {work.id}
-                  </span>
-
-                  <h2 className="text-2xl sm:text-4xl lg:text-6xl font-bold mt-3 sm:mt-4">
-                    {work.title}
-                  </h2>
-
-                  <p className="text-white/60 mt-4 sm:mt-8 max-w-xl text-sm sm:text-base lg:text-lg leading-relaxed">
-                    {work.description}
-                  </p>
-
-                  <div className="flex flex-wrap gap-2 sm:gap-3 mt-6 sm:mt-8">
-                    {work.tech.map((t) => (
-                      <span
-                        key={t}
-                        className="
-                          px-3 sm:px-4 py-1 sm:py-2
-                          rounded-full
-                          bg-white/5
-                          border border-white/10
-                          text-white/70
-                          text-xs sm:text-sm
-                        "
-                      >
-                        {t}
-                      </span>
-                    ))}
-                  </div>
-
-                </div>
-
-              </div>
-            </motion.div>
-          );
-        })}
-
+          {/* Foreground haze layer */}
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-stone-950/40 via-transparent to-stone-950/40" />
+        </div>
       </div>
+
+      <ProjectDetailOverlay
+        project={selectedProject}
+        onClose={() => setSelectedProject(null)}
+      />
     </section>
   );
 }

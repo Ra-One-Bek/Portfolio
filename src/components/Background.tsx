@@ -42,7 +42,7 @@ export default function Background({ count = 18, className = "" }: Props) {
     // Generate once
     const arr: Bubble[] = [];
     for (let i = 0; i < count; i++) {
-      const r = Math.round(18 + Math.random() * 70);
+      const r = Math.round(18 + Math.random() * 0.2);
       arr.push({
         id: i,
         x0: Math.random(),
@@ -166,7 +166,7 @@ export default function Background({ count = 18, className = "" }: Props) {
             opacity: b.opacity,
             filter: b.blur ? `blur(${b.blur}px)` : undefined,
             background:
-              "radial-gradient(circle at 30% 30%, rgba(255,255,255,0.85), rgba(255,255,255,0.25) 40%, rgba(255,255,255,0.08) 65%, rgba(255,255,255,0.0) 72%)",
+              "radial-gradient(circle at 30% 30%, rgba(255,255,255,0.85), rgba(253, 218, 143, 0.25) 40%, rgb(245, 204, 127) 65%, rgba(250, 167, 14, 0.64) 72%)",
           }}
         />
       ))}
