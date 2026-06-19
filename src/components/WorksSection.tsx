@@ -8,7 +8,6 @@ import {
   useVelocity,
 } from "framer-motion";
 import GalleryEnvironment from "./gallery/GalleryEnvironment";
-import GalleryRope from "./gallery/GalleryRope";
 import HangingProject from "./gallery/HangingProject";
 import ProjectDetailOverlay from "./gallery/ProjectDetailOverlay";
 import {
@@ -16,7 +15,6 @@ import {
   type Work,
   GALLERY_SPACING_DESKTOP,
   GALLERY_SPACING_MOBILE,
-  getRopeTop,
 } from "./gallery/worksData";
 
 function useIsMobile(breakpoint = 768) {
@@ -57,7 +55,6 @@ export default function WorksSection() {
   const spacing = isMobile ? GALLERY_SPACING_MOBILE : GALLERY_SPACING_DESKTOP;
   const galleryWidth = works.length * spacing;
   const travel = Math.max(0, galleryWidth - viewportWidth + spacing * 0.35);
-  const ropeTop = getRopeTop(isMobile);
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,

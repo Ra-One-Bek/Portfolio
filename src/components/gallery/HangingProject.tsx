@@ -43,10 +43,6 @@ export default function HangingProject({
   const ropeTop = getRopeTop(isMobile);
 
   const phase = index * 1.73 + 0.4;
-  const amp = 0.55 + (index % 4) * 0.18;
-  const stiffness = 72 + (index % 5) * 14;
-  const damping = 11 + (index % 3) * 3;
-  const mass = 0.75 + (index % 4) * 0.12;
 
   const centerProgress = index / Math.max(1, total - 1);
   const focus = useTransform(

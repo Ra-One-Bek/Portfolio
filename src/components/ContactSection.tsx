@@ -1,4 +1,4 @@
-import { useRef, useState } from "react"
+import { useRef } from "react"
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion"
 
 function ContactSection() {
@@ -15,9 +15,6 @@ function ContactSection() {
     stiffness: 120,
     damping: 20,
   })
-
-  const shineX = useTransform(x, (v) => (v + 0.5) * 100)
-  const shineY = useTransform(y, (v) => (v + 0.5) * 100)
 
 
  const handleMove = (e: React.MouseEvent<HTMLElement>) => {
