@@ -90,7 +90,8 @@ export default function Header() {
           "
         >
           <div className="flex items-center justify-between">
-            <motion.div
+            <motion.a
+              href="#"
               whileHover={{
                 scale: 1.03,
               }}
@@ -99,6 +100,7 @@ export default function Header() {
                 font-semibold
                 tracking-[0.25em]
                 text-amber-200
+                cursor-pointer
               "
               style={{
                 fontFamily:
@@ -106,7 +108,7 @@ export default function Header() {
               }}
             >
               Portfolio
-            </motion.div>
+            </motion.a>
 
             <nav className="hidden md:flex items-center gap-10">
               {navItems.map((item) => (
@@ -171,8 +173,8 @@ export default function Header() {
                 absolute
                 left-1/2
                 top-1/2
-                h-[260px]
-                w-[260px]
+                h-[min(260px,70vw)]
+                w-[min(260px,70vw)]
                 -translate-x-1/2
                 -translate-y-1/2
                 rounded-full
@@ -186,8 +188,8 @@ export default function Header() {
                 absolute
                 left-1/2
                 top-1/2
-                h-[420px]
-                w-[420px]
+                h-[min(420px,92vw)]
+                w-[min(420px,92vw)]
                 -translate-x-1/2
                 -translate-y-1/2
                 rounded-full

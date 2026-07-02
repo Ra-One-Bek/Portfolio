@@ -15,6 +15,26 @@ export default function HeroSection() {
     return () => window.removeEventListener("resize", check);
   }, []);
 
+  // плавный коэффициент масштаба картинки+глаз: 1 на широких экранах,
+  // линейно уменьшается до 0.55 на самых узких (320px)
+  const [vw, setVw] = useState(
+    typeof window !== "undefined" ? window.innerWidth : 1440
+  );
+
+  useEffect(() => {
+    const onResize = () => setVw(window.innerWidth);
+    onResize();
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
+  const faceScale = useMemo(() => {
+    const min = 320;
+    const max = 1024;
+    const t = Math.min(1, Math.max(0, (vw - min) / (max - min)));
+    return 0.9 + t * 0.45; // 0.55..1
+  }, [vw]);
+
   const eyePositions = useMemo(() => {
     if (isMobile) {
       // return {
@@ -160,20 +180,29 @@ export default function HeroSection() {
         className="absolute inset-0 flex items-center justify-center -z-23"
         style={{ transform: `translateY(${circleShift}px)` }}
       >
-        <div className="w-100 h-100 lg:w-200 lg:h-200 rounded-full bg-gradient-to-t from-slate-900/0 via-stone-900/20 to-stone-900/80"  />
+        <div
+          className="rounded-full bg-gradient-to-t from-slate-900/0 via-stone-900/20 to-stone-900/80"
+          style={{
+            width: "clamp(300px, 45vw, 800px)",
+            height: "clamp(300px, 45vw, 800px)",
+          }}
+        />
       </div>
 
       {/* Большой фон-текст */}
       <h1
         className="
           absolute inset-0 flex items-center 
-          justify-center text-7xl lg:text-[240px] lg:z-0 z-11 
+          justify-center lg:z-0 z-11 
           bg-gradient-to-b from-[#fff5d8] via-[#f6ca71] to-black
           bg-clip-text
           text-transparent select-none pointer-events-none 
           will-change-transform
         "
-        style={{ transform: `translateY(${raOneShift}px)` }}
+        style={{
+          transform: `translateY(${raOneShift}px)`,
+          fontSize: "clamp(3.5rem, 18vw, 15rem)",
+        }}
       >
         RaOne
       </h1>
@@ -183,11 +212,20 @@ export default function HeroSection() {
         className="absolute inset-0 flex items-center justify-center -translate-y-16 z-10 will-change-transform"
         style={{ transform: `translateY(${imgShift}px)` }} 
       >
-        <div className="relative">
+        <div
+          className="relative"
+          style={{ transform: `scale(${faceScale})`, transformOrigin: "center" }}
+        >
           <img
             src={`${import.meta.env.BASE_URL}img/raone-monolisa.png`}
             alt=""
             className="max-w-full h-auto object-contain"
+            style={{
+              WebkitMaskImage:
+                "linear-gradient(to bottom, black 0%, black 90%, transparent 90%)",
+              maskImage:
+                "linear-gradient(to bottom, black 0%, black 80%, transparent 90%)",
+            }}
           />
 
           {/* Правый глаз */}
@@ -254,10 +292,13 @@ export default function HeroSection() {
       </div>
 
       {/* Передний текст */}
-      <div className="relative z-10 flex flex-col items-center justify-center h-full translate-y-20 lg:translate-y-40">
+      <div className="relative z-10 flex flex-col items-center justify-center h-full translate-y-14 lg:translate-y-40">
         <h1
-          className="text-7xl lg:text-[250px] text-white will-change-transform"
-          style={{ transform: `translateY(${abiyevShift}px)` }}
+          className="text-white will-change-transform"
+          style={{
+            transform: `translateY(${abiyevShift}px)`,
+            fontSize: "clamp(3.5rem, 18.5vw, 15.6rem)",
+          }}
         >
           Abiyev
         </h1>

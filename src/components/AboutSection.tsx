@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import AboutSkillsCards from "./AboutSkillsCards";
 import Background from "./Background";
 import BubbleFollower from "./BubbleFollower";
-import { motion, useScroll, useTransform, type Variants } from "framer-motion";
+import { motion, useScroll, useTransform, type Variants, easeOut } from "framer-motion";
+
 
 export default function AboutSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -12,6 +13,20 @@ export default function AboutSection() {
   const [cardsOffset, setCardsOffset] = useState(0);
 
   const [isMobile, setIsMobile] = useState(false);
+  
+  const [handStopPoint, setHandStopPoint] = useState(500);
+
+  useEffect(() => {
+    const calc = () => {
+      const vw = window.innerWidth;
+      // подбирай коэффициент под себя, например 0.35 от ширины экрана
+      setHandStopPoint(vw * 0.26);
+    };
+
+    calc();
+    window.addEventListener("resize", calc);
+    return () => window.removeEventListener("resize", calc);
+  }, []);
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
@@ -36,26 +51,34 @@ export default function AboutSection() {
     offset: ["start end", "end start"],
   });
 
+  // отдельный, более быстрый прогресс скролла — только для рук
+  const { scrollYProgress: handsProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end 80%"],
+  });
+
   const leftHandX = useTransform(
-    scrollYProgress,
+    handsProgress,
     [0, 1],
-    [0, 600]
+    [0, handStopPoint],
+    { ease: easeOut }
   );
 
   const rightHandX = useTransform(
-    scrollYProgress,
+    handsProgress,
     [0, 1],
-    [0, -600]
+    [0, -handStopPoint],
+    { ease: easeOut }
   );
 
   const leftHandRotate = useTransform(
-    scrollYProgress,
+    handsProgress,
     [0, 1],
     [0, 12]
   );
 
   const rightHandRotate = useTransform(
-    scrollYProgress,
+    handsProgress,
     [0, 1],
     [0, -12]
   );
@@ -153,7 +176,7 @@ export default function AboutSection() {
               <motion.div style={{ x: aboutX, y: titleY }}>
                 <h1
                   className="
-                    text-[42px] lg:text-[74px]
+                    text-[32px] sm:text-[42px] lg:text-[56px] xl:text-[74px]
                     font-semibold tracking-tight leading-[0.9]
                     bg-gradient-to-b from-white via-white/80 to-white/30
                     bg-clip-text text-transparent
@@ -169,7 +192,7 @@ export default function AboutSection() {
                 <div
                   className="
                     mt-2
-                    text-[24px] lg:text-[74px]
+                    text-[18px] sm:text-[24px] md:text-[44px] lg:text-[54px] xl:text-[74px]
                     font-semibold leading-none
                     text-white/20
                     tracking-[0.12em]
@@ -194,11 +217,8 @@ export default function AboutSection() {
             left-0
             top-[42%]
             -translate-y-1/2
-            w-[420px]
-            lg:w-[1020px]
-            opacity-50
+            w-[clamp(120px,45vw,1020px)]
             pointer-events-none
-            z-[1]
           "
         />
 
@@ -211,9 +231,7 @@ export default function AboutSection() {
             right-0
             top-[42%]
             -translate-y-1/2
-            w-[420px]
-            lg:w-[1020px]
-            opacity-50
+            w-[clamp(120px,45vw,1020px)]
             pointer-events-none
             z-[1]
           "

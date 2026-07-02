@@ -17,6 +17,10 @@
 html, body {
   scroll-behavior: smooth;
   background-color:#08080833;
+  /* clip, а не hidden: не создаёт новый scroll-контейнер,
+     поэтому position: sticky внутри страницы (AboutSkillsCards) не ломается */
+  overflow-x: clip;
+  max-width: 100vw;
 }
 /* 
 * {

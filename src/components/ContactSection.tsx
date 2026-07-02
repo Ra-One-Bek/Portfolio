@@ -38,7 +38,7 @@ function ContactSection() {
   return (
     <main id="contact" className="min-h-screen bg-stone-950 overflow-hidden flex items-center justify-center p-6">
 
-      <div className="[perspective:2000px]">
+      <div className="[perspective:1000px] lg:[perspective:300px]">
         <motion.section
           ref={cardRef}
           onMouseMove={handleMove}
@@ -129,7 +129,7 @@ function ContactSection() {
               Rauanbek
             </h1>
 
-            <p className="mt-3 text-lg font-semibold text-[#5f5a52]">
+            <p className="mt-3 w-100 text-lg font-semibold text-[#5f5a52]">
               Creative Frontend Developer / Designer
             </p>
 
